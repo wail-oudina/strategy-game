@@ -1,10 +1,9 @@
 package main.units;
 
 import main.Player;
-import main.Resource;
 import main.map.GameMap;
 import main.tools.Tool;
-import main.tools.ToolType;
+
 
 public class UnitHandler {
     public Player player;
