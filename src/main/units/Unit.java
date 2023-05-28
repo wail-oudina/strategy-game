@@ -6,6 +6,8 @@ import main.Resource;
 import main.map.GameMap;
 import main.tools.Tool;
 
+import java.util.List;
+
 
 public class Unit {
     public int speed,food_cost;
@@ -16,6 +18,7 @@ public class Unit {
     public Player player;
     public Tool tool;
     private int xpMultiplier;
+
 
 
     public Unit(int x, int y, int speed, int food_cost,Tool tool,GameMap gm,Player player) {
@@ -33,17 +36,9 @@ public class Unit {
 
 
 
-    public void addToMap(){
-        if (this.tool != null) {
-            this.gm.map[this.x][this.y] = this.tool.type.jobname.toUpperCase().charAt(0);
-        }else {
-            this.gm.map[this.x][this.y] = 'U';
-        }
-
-    }
-
 
     public int[] getClosestResource() {
+
         int[] closest = new int[3];
         int closestDistance = Integer.MAX_VALUE;
 
@@ -54,8 +49,9 @@ public class Unit {
                 if (tile != 'U' && tile != '0') {
                     Resource resource = Resource.getResourceByMapLabel(tile);
 
-                    if (resource != null && tool.type.job.getRequiredResources().contains(resource)) {
+                    if (resource != null && getSeekedResources().contains(resource)) {
                         int distance = Math.abs(x - i) + Math.abs(y - j);
+
                         if (distance < closestDistance) {
                             closestDistance = distance;
                             closest[0] = i;
@@ -66,7 +62,6 @@ public class Unit {
                 }
             }
         }
-        System.out.println("distance: " + closest[2]);
         return closest;
     }
     public void incrementXp(){
@@ -83,12 +78,9 @@ public class Unit {
         this.player.Inventory.put(Resource.FOOD, this.player.Inventory.get(Resource.FOOD) - this.food_cost);
     }
     public void moveTo(int x, int y,int distance) {
+
         if (distance == 0) {
             System.out.println("Already at the resource");
-            return;
-        }
-        if ( speed < distance) {
-            System.out.println("Not enough speed to move that far");
             return;
         }
 
@@ -104,18 +96,37 @@ public class Unit {
                     this.y--;
                 }
                 this.decreaseFood();
-                System.out.println("harvested " + Resource.getResourcebyTile(this.x,this.y,this.gm));
+
             }else{
                 System.out.println("Not enough food to move");
                 break;
             }
         }
     }
+    public String getJob(){
+        if (this.tool != null) {
+            return this.tool.type.getJobname();
+        }else{
+            return "None";
+        }
+    }
+    public List<Resource> getSeekedResources(){
+        if (this.tool != null) {
+            return this.tool.type.getRequiredResources();
+        }else{
+            return null;
+        }
+    }
     public void harvestResource(){
         this.incrementXp();
         Resource rs = Resource.getResourcebyTile(this.x,this.y,this.gm);
         this.player.Inventory.put(rs,this.player.Inventory.get(rs)+1);
+        System.out.println("harvested " + rs.label);
         this.gm.map[this.x][this.y] = 0;
+        this.gm.RESSOURCE_COUNT.put(rs, this.gm.RESSOURCE_COUNT.getOrDefault(rs, 0) - 1);
+    }
+    public void printInfo(){
+        System.out.println("Unit at: " + this.x + "," + this.y + " speed : "+ this.speed + " Job : " + this.getJob()+ "\n");
     }
 
 
