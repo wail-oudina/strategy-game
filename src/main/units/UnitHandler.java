@@ -32,8 +32,7 @@ public class UnitHandler {
     public void RunUnits(){
         for (Unit unit : this.player.Units) {
             unit.printInfo();
-            int[] closestResource = new int[3];
-            closestResource = unit.getClosestResource();
+            int[] closestResource = unit.getClosestResource();
             unit.moveTo(closestResource[0],closestResource[1],closestResource[2]);
             if ( unit.x == closestResource[0] && unit.y == closestResource[1]){
                 unit.harvestResource();
