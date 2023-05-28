@@ -1,18 +1,29 @@
 package main.tools;
 
-import main.units.UnitJobs;
+import main.Resource;
+import main.tools.ToolType;
+
+import java.util.List;
 
 public enum ToolType {
-    AXE(UnitJobs.BUTCHER,"Butcher"),
-    HOE(UnitJobs.FARMER,"Farmer"),
-    PICKAXE(UnitJobs.MINER,"Miner");
+    AXE("Butcher",Resource.WOOD),
+    HOE("Farmer",Resource.FOOD),
+    PICKAXE("Miner",Resource.STONE,Resource.GOLD);
 
-    public final String jobname;
-    public final UnitJobs job;
-
-    ToolType(UnitJobs job,String jobname){
+    private final List<Resource> requiredResources;
+    private final String jobname;
+    ToolType(String jobname,Resource... requiredResources) {
         this.jobname = jobname;
-        this.job = job;
+        this.requiredResources = List.of(requiredResources);
+
+    }
+    public List<Resource> getRequiredResources() {
+        return requiredResources;
+    }
+    public String getJobname() {
+        return jobname;
     }
 
+
 }
+
